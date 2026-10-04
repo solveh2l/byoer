@@ -38,48 +38,73 @@
             color: var(--text-main);
         }
 
+        /* Room Background */
         .room-bg {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
+            width: 100%;
             height: 100vh;
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+            height: 100dvh;
+            background: #090a0f;
+            overflow: hidden;
             cursor: pointer;
-            transition: background-image 0.6s ease-in-out;
+            z-index: 0;
         }
 
-        .room-bg[data-stage="1"] {
-            background-image: url('/images/cell-block.jpg');
-        }
-
-        .room-bg[data-stage="2"] {
-            background-image: url('/images/prison-courtyard.jpg');
-        }
-
-        .room-bg[data-stage="3"] {
-            background-image: url('/images/docks.jpg');
-        }
-
-        .room-bg::before {
+        .room-bg::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.35) 0%, rgba(22, 33, 62, 0.25) 40%, rgba(15, 15, 26, 0.45) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .room-bg.flash::after {
+            background: radial-gradient(circle at center, rgba(0, 255, 157, 0.3) 0%, transparent 70%);
+        }
+
+        .room-img {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, rgba(26, 26, 46, 0.5) 0%, rgba(22, 33, 62, 0.4) 40%, rgba(15, 15, 26, 0.6) 100%);
-            pointer-events: none;
+            object-fit: cover;
+            object-position: center;
+            display: block;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        .room-img-blur {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+            filter: blur(40px) brightness(1) saturate(1);
+            transform: scale(1.2);
+            display: block;
+            user-select: none;
+            -webkit-user-drag: none;
+        }
+
+        /* On portrait phones, show the whole scene instead of cropping it */
+        @media (orientation: portrait) {
+            .room-img {
+                object-fit: contain;
+            }
         }
 
         .fog-overlay {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
+            width: 100%;
             height: 100vh;
+            height: 100dvh;
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="200" height="100" viewBox="0 0 200 100"><rect width="200" height="100" fill="none"/><circle cx="20" cy="50" r="20" fill="white" opacity="0.03"/><circle cx="80" cy="30" r="15" fill="white" opacity="0.03"/><circle cx="150" cy="60" r="25" fill="white" opacity="0.03"/></svg>');
             z-index: 1;
             pointer-events: none;
@@ -304,7 +329,10 @@
         </div>
     </div>
 
-    <div class="room-bg" id="room-bg" data-stage="1"></div>
+    <div class="room-bg" id="room-bg">
+        <img class="room-img-blur" id="room-img-blur" src="/images/cell-block.jpg" alt="" aria-hidden="true">
+        <img class="room-img" id="room-img" src="/images/cell-block.jpg" alt="Cell Block">
+    </div>
     <div class="fog-overlay"></div>
 
     <div class="timer-bar">
@@ -376,6 +404,8 @@
         let timeUp = false;
 
         const roomBg = document.getElementById('room-bg');
+        const roomImg = document.getElementById('room-img');
+        const roomImgBlur = document.getElementById('room-img-blur');
         const roomName = document.getElementById('room-name');
         const roomStage = document.getElementById('room-stage');
         const stageHint = document.getElementById('stage-hint');
@@ -386,6 +416,12 @@
             1: 'Cell Block',
             2: 'Prison Courtyard',
             3: 'Docks'
+        };
+
+        const stageImages = {
+            1: '/images/cell-block.jpg',
+            2: '/images/prison-courtyard.jpg',
+            3: '/images/docks.jpg'
         };
 
         if (!sessionStorage.getItem('escapeStartTime')) {
@@ -423,13 +459,14 @@
         function advanceStage() {
             if (currentStage < 3) {
                 currentStage++;
-                roomBg.setAttribute('data-stage', currentStage);
+                roomImg.src = stageImages[currentStage];
+                roomImgBlur.src = stageImages[currentStage];
                 roomName.textContent = stages[currentStage];
                 roomStage.textContent = `STAGE ${currentStage} OF 3`;
-                
-                roomBg.style.boxShadow = 'inset 0 0 100px rgba(0, 255, 157, 0.3)';
+
+                roomBg.classList.add('flash');
                 setTimeout(() => {
-                    roomBg.style.boxShadow = 'none';
+                    roomBg.classList.remove('flash');
                 }, 500);
             } else {
                 window.location.href = 'victory';
