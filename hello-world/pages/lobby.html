@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="BYOER - Bring Your Own Escape Room">
-    <title>BYOER - Ship of the Damned | Lobby</title>
+    <title>BYOER - Escape from Alcatraz | Lobby</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
@@ -221,6 +221,58 @@
             display: none;
         }
 
+        /* Host Nickname */
+        .host-section {
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 520px;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .host-section h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-cyan);
+            margin-bottom: 0.8rem;
+        }
+
+        .host-input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .host-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .host-input:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .host-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-cyan);
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
         /* Start Button */
         .join-btn {
             background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
@@ -300,18 +352,26 @@
 
     <section class="hero">
         <div class="theme-badge">
-            🚢 Location: <span>Ship</span>  •  🎃 Theme: <span>Spooky</span>
+            🏫 Location: <span>Prison</span>  •  ⛓️ Theme: <span>Alcatraz</span>
         </div>
-        <h1 class="room-title">Ship of the Damned</h1>
+        <h1 class="room-title">Escape from Alcatraz</h1>
         <p class="room-desc">
-            The crew is missing. The ship drifts through the fog. Solve the mysteries,
-            unlock the secrets, and escape before it's too late.
+            You've been incarcerated in the most secure prison on the planet. 
+            Study the routines, find the weaknesses, and break free before the lockdown.
         </p>
+
+        <div class="host-section">
+            <h3>Host Profile</h3>
+            <div class="host-input-wrapper">
+                <img src="https://i.pravatar.cc/40?img=1" class="host-avatar" id="host-avatar">
+                <input type="text" class="host-input" id="host-name" placeholder="Enter your nickname" value="">
+            </div>
+        </div>
 
         <div class="share-box">
             <h3>Invite Your Friends</h3>
             <div class="share-input-wrapper">
-                <input type="text" class="share-input" value="https://byoer.app/room/ship-of-the-damned" readonly id="share-link">
+                <input type="text" class="share-input" readonly id="share-link">
                 <button class="btn-copy" onclick="copyLink()">Copy Link</button>
             </div>
             <div class="copied-tooltip" id="copied-tooltip">Link copied to clipboard!</div>
@@ -327,12 +387,35 @@
     </section>
 
     <script>
+        // Pre-curated host names
+        const hostNames = [
+            'Captain Hook', 'First Mate', 'Navigator', 'Engineer', 'Warden Steele',
+            'Dr. Lockwood', 'Guard Vance', 'The Locksmith', 'Shadow', 'Echo',
+            'Cipher', 'The Breaker', 'Iron Will', 'Night Watch', 'The Escape Artist',
+            'Silas Lock', 'Dr. Key', 'The Warden', 'Cell Block Chief', 'Harbor Master'
+        ];
+
+        // Random nickname on load
+        function setRandomNickname() {
+            const input = document.getElementById('host-name');
+            if (input.value.trim() === '') {
+                const randomName = hostNames[Math.floor(Math.random() * hostNames.length)];
+                input.value = randomName;
+            }
+        }
+
+        // Dynamic share link
+        function setShareLink() {
+            const shareUrl = window.location.origin + '/room';
+            document.getElementById('share-link').value = shareUrl;
+        }
+
         function copyLink() {
             const link = document.getElementById('share-link');
             link.select();
             link.setSelectionRange(0, 99999);
             navigator.clipboard.writeText(link.value);
-            
+
             const tooltip = document.getElementById('copied-tooltip');
             tooltip.style.display = 'block';
             setTimeout(() => {
@@ -341,8 +424,17 @@
         }
 
         function goToVideo() {
+            // Save host name
+            const name = document.getElementById('host-name').value.trim();
+            if (name) {
+                sessionStorage.setItem('hostName', name);
+            }
             window.location.href = 'video';
         }
+
+        // Initialize
+        setShareLink();
+        setRandomNickname();
 
         // Simulate incoming players
         const fakeNames = ['Captain Hook', 'First Mate', 'Navigator', 'Engineer'];

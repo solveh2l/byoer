@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="BYOER - Bring Your Own Escape Room - Escape Room Scene">
-    <title>BYOER - Ship of the Damned | Escape Room</title>
+    <title>BYOER - Escape from Alcatraz | Escape Room</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
@@ -38,23 +38,40 @@
             color: var(--text-main);
         }
 
-        /* Room Background */
         .room-bg {
             position: fixed;
             top: 0;
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 40%, #0f0f1a 100%);
-            background-image:
-                radial-gradient(ellipse at 30% 70%, rgba(157, 78, 221, 0.2) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 30%, rgba(0, 240, 255, 0.1) 0%, transparent 60%),
-                url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect width="100" height="100" fill="%230a0a14"/><circle cx="20" cy="20" r="2" fill="%23ffffff" opacity="0.1"/><circle cx="50" cy="50" r="2" fill="%23ffffff" opacity="0.1"/><circle cx="80" cy="80" r="2" fill="%23ffffff" opacity="0.1"/><path d="M20 80 Q50 60 80 80" stroke="%23ffffff" stroke-width="0.5" fill="none" opacity="0.15"/></svg>');
             background-size: cover;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 0;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: pointer;
+            transition: background-image 0.6s ease-in-out;
+        }
+
+        .room-bg[data-stage="1"] {
+            background-image: url('/images/cell-block.jpg');
+        }
+
+        .room-bg[data-stage="2"] {
+            background-image: url('/images/prison-courtyard.jpg');
+        }
+
+        .room-bg[data-stage="3"] {
+            background-image: url('/images/docks.jpg');
+        }
+
+        .room-bg::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(26, 26, 46, 0.5) 0%, rgba(22, 33, 62, 0.4) 40%, rgba(15, 15, 26, 0.6) 100%);
+            pointer-events: none;
         }
 
         .fog-overlay {
@@ -68,7 +85,6 @@
             pointer-events: none;
         }
 
-        /* Timer */
         .timer-bar {
             position: fixed;
             top: 0;
@@ -84,7 +100,6 @@
             width: 100%;
             background: linear-gradient(90deg, var(--accent-cyan), var(--accent-red));
             transition: width 1s linear;
-            transform-origin: left;
         }
 
         .timer-text {
@@ -110,128 +125,6 @@
             50% { opacity: 0.5; }
         }
 
-        /* Clue Button */
-        .clue-btn {
-            position: fixed;
-            top: 1rem;
-            left: 1rem;
-            z-index: 30;
-            background: var(--panel-bg);
-            border: 1px solid rgba(0, 240, 255, 0.4);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .clue-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
-        }
-
-        .clue-btn svg {
-            width: 24px;
-            height: 24px;
-            fill: var(--accent-cyan);
-        }
-
-        .clue-btn.hidden {
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        /* Clue Modal */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-        }
-
-        .modal-overlay.open {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .modal {
-            background: var(--panel-bg);
-            border: 1px solid var(--accent-cyan);
-            border-radius: 16px;
-            padding: 2rem;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
-            overflow-y: auto;
-            box-shadow: 0 0 40px rgba(0, 240, 255, 0.2);
-            backdrop-filter: blur(15px);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .modal-title {
-            font-family: 'Cinzel', serif;
-            font-size: 1.3rem;
-            color: var(--accent-cyan);
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            color: var(--text-muted);
-            font-size: 1.5rem;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .modal-close:hover {
-            color: var(--accent-red);
-        }
-
-        .clue-text {
-            color: var(--text-main);
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-        }
-
-        .clue-list {
-            list-style: none;
-        }
-
-        .clue-list li {
-            padding: 0.8rem 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .clue-list li::before {
-            content: '🔍';
-            font-size: 1rem;
-        }
-
-        /* Room Header */
         .room-header {
             position: fixed;
             top: 1.5rem;
@@ -259,66 +152,134 @@
             text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
         }
 
-        /* Hint Button */
-        .hint-btn {
+        .room-stage {
+            font-family: 'Cinzel', serif;
+            font-size: 0.9rem;
+            color: var(--accent-cyan);
+            letter-spacing: 1px;
+            margin-top: 0.3rem;
+            text-transform: uppercase;
+        }
+
+        .stage-hint {
             position: fixed;
             bottom: 2rem;
             left: 50%;
             transform: translateX(-50%);
             z-index: 30;
             background: var(--panel-bg);
-            border: 1px solid var(--accent-purple);
-            border-radius: 50px;
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 12px;
             padding: 0.8rem 2rem;
+            color: var(--text-main);
+            font-size: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .stage-hint span {
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        /* Nickname Modal */
+        .nickname-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(10px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        .nickname-modal {
+            background: var(--panel-bg);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 0 50px rgba(0, 240, 255, 0.3);
+        }
+
+        .nickname-modal h2 {
+            font-family: 'Cinzel', serif;
+            color: var(--accent-cyan);
+            margin-bottom: 1rem;
+            font-size: 1.8rem;
+        }
+
+        .nickname-modal p {
+            color: var(--text-muted);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .nickname-input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
             color: var(--text-main);
             font-family: inherit;
             font-size: 1rem;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: transform 0.2s, box-shadow 0.2s;
+            margin-bottom: 1rem;
+            outline: none;
+            text-align: center;
         }
 
-        .hint-btn:hover {
-            transform: translateX(-50%) scale(1.05);
-            box-shadow: 0 0 20px rgba(157, 78, 221, 0.4);
-        }
-
-        /* Puzzle Buttons */
-        .puzzles-grid {
-            position: fixed;
-            bottom: 2rem;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 30;
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .puzzle-btn {
-            background: var(--panel-bg);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 0.8rem 1.5rem;
-            color: var(--text-main);
-            font-family: inherit;
-            font-size: 0.9rem;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: border-color 0.2s;
-        }
-
-        .puzzle-btn:hover {
+        .nickname-input:focus {
             border-color: var(--accent-cyan);
         }
 
-        .puzzle-btn.solved {
-            border-color: var(--accent-green);
-            opacity: 0.5;
+        .nickname-suggestions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-bottom: 1.5rem;
         }
 
-        /* Responsive */
+        .nickname-suggestion {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 20px;
+            padding: 0.4rem 1rem;
+            color: var(--accent-cyan);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .nickname-suggestion:hover {
+            background: rgba(0, 240, 255, 0.2);
+        }
+
+        .nickname-join-btn {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.9rem 2rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .nickname-join-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(157, 78, 221, 0.5);
+        }
+
         @media (max-width: 768px) {
             .timer-text {
                 font-size: 1.2rem;
@@ -333,63 +294,103 @@
     </style>
 </head>
 <body>
-    <!-- Background -->
-    <div class="room-bg"></div>
+    <div class="nickname-overlay" id="nickname-overlay">
+        <div class="nickname-modal">
+            <h2>Choose Your Alias</h2>
+            <p>Enter a nickname or pick one below</p>
+            <input type="text" class="nickname-input" id="nickname-input" maxlength="20" placeholder="Enter nickname">
+            <div class="nickname-suggestions" id="nickname-suggestions"></div>
+            <button class="nickname-join-btn" onclick="joinRoom()">Join Room</button>
+        </div>
+    </div>
+
+    <div class="room-bg" id="room-bg" data-stage="1"></div>
     <div class="fog-overlay"></div>
 
-    <!-- Timer -->
     <div class="timer-bar">
         <div class="timer-progress" id="timer-progress"></div>
     </div>
 
     <div class="timer-text" id="timer-text">60:00</div>
 
-    <!-- Clue Button (top-left) -->
-    <button class="clue-btn" id="clue-btn" title="Show Clue" onclick="openClueModal()">
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2C8.13 2 5 5.13 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7zm0 12c-2.76 0-5-2.24-5-5 0-1.39.77-2.62 2-3.25V9c0-.55.45-1 1-1h6c.55 0 1 .45 1 1v.75c1.23.63 2 1.86 2 3.25 0 2.76-2.24 5-5 5z"/>
-        </svg>
-    </button>
-
-    <!-- Room Header -->
     <div class="room-header">
-        <div class="room-label">🚢 Ship • 🎃 Spooky</div>
-        <div class="room-name">Ship of the Damned</div>
+        <div class="room-label">🏫 Location: <span>Prison</span>  •  ⛓️ Theme: <span>Alcatraz</span></div>
+        <div class="room-name" id="room-name">Cell Block</div>
+        <div class="room-stage" id="room-stage">STAGE 1 OF 3</div>
     </div>
 
-    <!-- Puzzle Buttons -->
-    <div class="puzzles-grid" id="puzzles-grid">
-        <button class="puzzle-btn" onclick="solvePuzzle(this, 'The Captain's Log')">The Captain's Log</button>
-        <button class="puzzle-btn" onclick="solvePuzzle(this, 'The Cargo Hold')">The Cargo Hold</button>
-        <button class="puzzle-btn" onclick="solvePuzzle(this, 'The Engine Room')">The Engine Room</button>
-        <button class="puzzle-btn" onclick="solvePuzzle(this, 'The Bridge')">The Bridge</button>
-    </div>
-
-    <!-- Clue Modal -->
-    <div class="modal-overlay" id="modal-overlay" onclick="closeClueModal()">
-        <div class="modal" onclick="event.stopPropagation()">
-            <div class="modal-header">
-                <span class="modal-title">🔍 Clue #1</span>
-                <button class="modal-close" onclick="closeClueModal()">✕</button>
-            </div>
-            <div class="clue-text">
-                <p><em>"The fog is thickest where the light fails. Look where the shadows fall longest — the answer lies in the reflection."</em></p>
-                <br>
-                <p><strong>Hint:</strong> The mirror in the captain's quarters reflects something that doesn't exist in the room. Check the reflection carefully.</p>
-            </div>
-            <button class="hint-btn" onclick="closeClueModal()">UNDERSTOOD</button>
-        </div>
+    <div class="stage-hint" id="stage-hint">
+        <span>Click</span> to solve this area and advance
     </div>
 
     <script>
-        // Countdown Timer (60 minutes default)
-        const TOTAL_TIME = 60 * 60; // 60 minutes in seconds
+        // Pre-curated nicknames
+        const allNicknames = [
+            'Captain Hook', 'First Mate', 'Navigator', 'Engineer',
+            'Shadow', 'Echo', 'Cipher', 'The Locksmith',
+            'Warden Steele', 'Dr. Lockwood', 'Guard Vance',
+            'The Breaker', 'Iron Will', 'Night Watch'
+        ];
+
+        // Check if user is the host (has name from lobby) or a friend
+        const isHost = sessionStorage.getItem('hostName') !== null;
+
+        if (isHost) {
+            // Host already set their name in lobby - skip modal, go straight to room
+            document.getElementById('nickname-overlay').style.display = 'none';
+        } else {
+            // Friend - show nickname modal
+            const shuffled = allNicknames.sort(() => Math.random() - 0.5);
+            const suggestions = shuffled.slice(0, 3);
+            const suggestionsEl = document.getElementById('nickname-suggestions');
+            suggestions.forEach(name => {
+                const chip = document.createElement('span');
+                chip.className = 'nickname-suggestion';
+                chip.textContent = name;
+                chip.onclick = () => {
+                    document.getElementById('nickname-input').value = name;
+                };
+                suggestionsEl.appendChild(chip);
+            });
+
+            // Pre-fill a random name
+            document.getElementById('nickname-input').value = shuffled[3];
+
+            document.getElementById('nickname-overlay').style.display = 'flex';
+        }
+
+        function joinRoom() {
+            const name = document.getElementById('nickname-input').value.trim();
+            if (name) {
+                sessionStorage.setItem('playerName', name);
+            } else {
+                sessionStorage.setItem('playerName', allNicknames[Math.floor(Math.random() * allNicknames.length)]);
+            }
+            document.getElementById('nickname-overlay').style.display = 'none';
+        }
+
+        let currentStage = 1;
+        const TOTAL_TIME = 60 * 60;
         let timeLeft = TOTAL_TIME;
         let timerInterval = null;
         let timeUp = false;
 
+        const roomBg = document.getElementById('room-bg');
+        const roomName = document.getElementById('room-name');
+        const roomStage = document.getElementById('room-stage');
+        const stageHint = document.getElementById('stage-hint');
         const timerText = document.getElementById('timer-text');
         const timerProgress = document.getElementById('timer-progress');
+
+        const stages = {
+            1: 'Cell Block',
+            2: 'Prison Courtyard',
+            3: 'Docks'
+        };
+
+        if (!sessionStorage.getItem('escapeStartTime')) {
+            sessionStorage.setItem('escapeStartTime', Date.now());
+        }
 
         function updateTimer() {
             if (timeLeft <= 0 || timeUp) {
@@ -410,7 +411,6 @@
             const percent = (timeLeft / TOTAL_TIME) * 100;
             timerProgress.style.width = percent + '%';
 
-            // Warning class when below 10%
             if (percent < 10) {
                 timerText.classList.add('warning');
             } else {
@@ -420,46 +420,26 @@
             timeLeft--;
         }
 
-        // Start timer
+        function advanceStage() {
+            if (currentStage < 3) {
+                currentStage++;
+                roomBg.setAttribute('data-stage', currentStage);
+                roomName.textContent = stages[currentStage];
+                roomStage.textContent = `STAGE ${currentStage} OF 3`;
+                
+                roomBg.style.boxShadow = 'inset 0 0 100px rgba(0, 255, 157, 0.3)';
+                setTimeout(() => {
+                    roomBg.style.boxShadow = 'none';
+                }, 500);
+            } else {
+                window.location.href = 'victory';
+            }
+        }
+
+        document.addEventListener('click', advanceStage);
+
         updateTimer();
         timerInterval = setInterval(updateTimer, 1000);
-
-        // Clue Modal
-        function openClueModal() {
-            document.getElementById('modal-overlay').classList.add('open');
-        }
-
-        function closeClueModal() {
-            document.getElementById('modal-overlay').classList.remove('open');
-        }
-
-        // Solve Puzzle
-        function solvePuzzle(btn, name) {
-            if (btn.classList.contains('solved')) return;
-            btn.classList.add('solved');
-            btn.textContent = '✓ ' + name + ' (Solved)';
-            btn.disabled = true;
-            
-            // Brief celebration effect
-            const roomBg = document.querySelector('.room-bg');
-            roomBg.style.boxShadow = 'inset 0 0 100px rgba(0, 255, 157, 0.3)';
-            setTimeout(() => {
-                roomBg.style.boxShadow = 'none';
-            }, 500);
-        }
-
-        // Hide clue button initially (shown after hover)
-        const clueBtn = document.getElementById('clue-btn');
-        document.addEventListener('mousemove', function showClue() {
-            clueBtn.classList.remove('hidden');
-            document.removeEventListener('mousemove', showClue);
-        }, { once: true });
-
-        // Touch support for clue button
-        document.addEventListener('touchstart', function showClueTouch() {
-            clueBtn.classList.remove('hidden');
-            document.removeEventListener('touchstart', showClueTouch);
-        }, { once: true });
     </script>
 </body>
 </html>
