@@ -1,8 +1,7 @@
 {
-  "name": "byo-escape-room",
+  "name": "byoer-landing",
   "compatibility_date": "2024-01-01",
-  "main": "src/index.ts",
-  "vars": {
-    "ENVIRONMENT": "development"
+  "assets": {
+    "directory": "pages"
   }
 }
