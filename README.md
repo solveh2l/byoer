@@ -2,10 +2,10 @@
 
 **Proof of Concept / MVP Demo** — Free hosting on Cloudflare Workers + Pages
 
-## Live Demo
+## Live Demo (Deployed!)
 
+- **Landing Page (Pages):** https://byoer-landing.hello-world-byre.workers.dev/
 - **Worker API:** https://byo-escape-room.hello-world-byre.workers.dev/api/hello
-- **Landing Page:** (deploy via `npx wrangler pages deploy hello-world/pages/`)
 
 ## Local Development
 
