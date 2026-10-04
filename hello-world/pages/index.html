@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BYOER - Bring Your Own Escape Room. AI-powered escape room generation for any theme.">
+    <title>BYOER - Bring Your Own Escape Room</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #090a0f;
+            --panel-bg: rgba(18, 20, 29, 0.7);
+            --accent-cyan: #00f0ff;
+            --accent-purple: #9d4edd;
+            --accent-green: #00ff9d;
+            --text-main: #f0f3f9;
+            --text-muted: #94a3b8;
+            --border-glow: rgba(0, 240, 255, 0.25);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 15% 20%, rgba(157, 78, 221, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(0, 240, 255, 0.12) 0%, transparent 45%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 5%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(9, 10, 15, 0.85);
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            color: #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--accent-cyan);
+            text-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.95rem;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 4rem 1.5rem 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .badge {
+            background: rgba(0, 240, 255, 0.1);
+            border: 1px solid var(--accent-cyan);
+            color: var(--accent-cyan);
+            padding: 0.4rem 1.2rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+        }
+
+        h1 {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.4rem, 6vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 1.3rem;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            max-width: 750px;
+        }
+
+        /* Interactive Generator Card */
+        .generator-card {
+            background: var(--panel-bg);
+            border: 2px solid var(--accent-cyan);
+            border-radius: 16px;
+            padding: 2.5rem 2rem;
+            width: 100%;
+            max-width: 850px;
+            box-shadow: 0 0 35px rgba(0, 240, 255, 0.15);
+            backdrop-filter: blur(12px);
+            margin-bottom: 4rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            text-align: left;
+        }
+
+        @media (max-width: 650px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .input-field-wrapper {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 0.6rem;
+        }
+
+        .input-label {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-cyan);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .select-field {
+            background: #0d0f17;
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            border-radius: 8px;
+            padding: 0.9rem 1rem;
+            color: #fff;
+            font-family: inherit;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .select-field option {
+            background-color: #0d0f17;
+            color: #fff;
+            padding: 10px;
+        }
+
+        .select-field:focus {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+        }
+
+        .action-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 1rem 2.5rem;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.3);
+            width: 100%;
+            max-width: 320px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(157, 78, 221, 0.5);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Generated Output Teaser */
+        .teaser-box {
+            background: rgba(0, 0, 0, 0.5);
+            border-left: 3px solid var(--accent-cyan);
+            padding: 1.2rem;
+            border-radius: 0 8px 8px 0;
+            text-align: left;
+            font-size: 0.95rem;
+            min-height: 100px;
+        }
+
+        .teaser-title {
+            color: var(--accent-cyan);
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        /* Live Status Bar */
+        .status-bar {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 3rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* How It Works Section */
+        .section {
+            padding: 5rem 1.5rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            text-align: center;
+            font-family: 'Cinzel', serif;
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            margin-bottom: 3rem;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .step-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 2.5rem 1.8rem;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+            position: relative;
+        }
+
+        .step-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent-cyan);
+        }
+
+        .step-number {
+            position: absolute;
+            top: 1rem;
+            right: 1.3rem;
+            font-family: 'Cinzel', serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: rgba(0, 240, 255, 0.2);
+        }
+
+        .step-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .step-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.7rem;
+        }
+
+        .step-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Features Section */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 2rem;
+            position: relative;
+            transition: border-color 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent-purple);
+        }
+
+        .feature-card.disabled {
+            opacity: 0.45;
+            filter: grayscale(80%);
+            border-style: dashed;
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .status-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-muted);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 0.65rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .feature-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.15rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Live Demo Section */
+        .demo-card {
+            background: var(--panel-bg);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .demo-title {
+            color: var(--accent-cyan);
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 1rem;
+        }
+
+        .demo-content {
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            padding: 1.5rem;
+            font-family: 'Space Mono', 'Courier New', monospace;
+            font-size: 0.85rem;
+            color: var(--accent-cyan);
+            min-height: 180px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+        }
+
+        .demo-loading {
+            color: var(--text-muted);
+        }
+
+        /* Footer */
+        footer {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 3rem 5%;
+            text-align: center;
+            margin-top: 4rem;
+        }
+
+        footer p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent-cyan);
+            text-decoration: none;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <a href="#" class="logo">BYO<span>ER</span></a>
+        <ul class="nav-links">
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#demo">Live Demo</a></li>
+            <li><a href="#demo">Launch App</a></li>
+        </ul>
+        <a href="#demo"><button class="btn-primary" style="padding: 0.5rem 1.2rem; font-size: 0.85rem; width: auto;">Launch App</button></a>
+    </nav>
+
+    <section class="hero">
+        <div class="badge">AI-Powered Escape Room Generator</div>
+        <h1>Bring Your Own Escape Room</h1>
+        <p>
+            Select a location and theme. Our generative AI crafts custom puzzles, dynamic storylines,
+            printable props, and host controls in seconds. Anyone can join and solve.
+        </p>
+
+        <!-- Interactive Generator Card -->
+        <div class="generator-card">
+            <div class="form-grid">
+                <div class="input-field-wrapper">
+                    <label class="input-label" for="location-select">
+                        📍 Location
+                    </label>
+                    <select id="location-select" class="select-field">
+                        <option value="prison">Prison</option>
+                        <option value="space-station">Space Station</option>
+                        <option value="ship">Ship</option>
+                        <option value="haunted-house">Haunted House</option>
+                        <option value="cyberpunk">Cyberpunk</option>
+                    </select>
+                </div>
+
+                <div class="input-field-wrapper">
+                    <label class="input-label" for="theme-select">
+                        🎭 Theme
+                    </label>
+                    <select id="theme-select" class="select-field">
+                        <option value="spooky">Spooky</option>
+                        <option value="cthulhu">Cthulhu</option>
+                        <option value="cyberpunk" selected>Cyberpunk</option>
+                        <option value="medieval">Medieval</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="action-container">
+                <button id="generate-btn" class="btn-primary">Generate Escape Room</button>
+            </div>
+
+            <div class="teaser-box" id="teaser-box">
+                <div class="teaser-title">Generated Room Status</div>
+                <p><em>"The rogue AI locked the pantry vault. Inspect the refrigerator door for the binary magnetic sequence before the 60-minute countdown expires."</em></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="how-it-works">
+        <h2 class="section-title">How It Works</h2>
+        <div class="steps">
+            <div class="step-card">
+                <span class="step-number">1</span>
+                <div class="step-icon">🎲</div>
+                <h3>Host Creates Room</h3>
+                <p>Pick a theme and location. AI generates custom puzzles, storyline, and clues tailored to your escape room.</p>
+            </div>
+            <div class="step-card">
+                <span class="step-number">2</span>
+                <div class="step-icon">🔗</div>
+                <h3>Share the Room</h3>
+                <p>Send players a link. Anyone can join, read the puzzle hints, and start solving.</p>
+            </div>
+            <div class="step-card">
+                <span class="step-number">3</span>
+                <div class="step-icon">💡</div>
+                <h3>Solve Together</h3>
+                <p>Collaborate in real-time, solve puzzles, and escape before the clock runs out.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="features">
+        <h2 class="section-title">Features</h2>
+        <div class="features">
+            <div class="feature-card disabled">
+                <span class="status-badge">Coming Soon</span>
+                <div class="feature-icon">🖨️</div>
+                <h3>Print & Play Kits</h3>
+                <p>Instant PDF generation containing custom cipher sheets, decoded maps, and prop templates for players.</p>
+            </div>
+            <div class="feature-card disabled">
+                <span class="status-badge">Coming Soon</span>
+                <div class="feature-icon">📱</div>
+                <h3>Game Master Dashboard</h3>
+                <p>Control the game live from your phone. Release hints on demand, trigger effects, and manage players.</p>
+            </div>
+            <div class="feature-card">
+                <span class="status-badge" style="color: var(--accent-green); border-color: var(--accent-green);">Live</span>
+                <div class="feature-icon">⚡</div>
+                <h3>Instant Generation</h3>
+                <p>AI-powered puzzle creation from any theme in seconds. No setup, no waiting.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" id="demo">
+        <h2 class="section-title">Live Demo</h2>
+        <div class="demo-card">
+            <div class="demo-title">📡 Connected to BYOER API</div>
+            <div class="demo-content demo-loading" id="demo-content">
+Loading live data...
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#how-it-works">How It Works</a>
+            <a href="#features">Features</a>
+            <a href="#demo">Live Demo</a>
+        </div>
+        <p>Made with ⚡ by BYOER Team. Powered by Cloudflare Workers & AI.</p>
+        <p style="margin-top: 0.5rem; font-size: 0.8rem;"><a href="https://byo-escape-room.hello-world-byre.workers.dev">API Endpoint</a></p>
+    </footer>
+
+    <script>
+        const API_URL = window.location.hostname === 'localhost' 
+          ? 'http://localhost:8787/api/hello' 
+          : 'https://byo-escape-room.hello-world-byre.workers.dev/api/hello';
+
+        async function loadDemo() {
+            const content = document.getElementById('demo-content');
+            content.classList.add('demo-loading');
+            content.textContent = 'Connecting to API...';
+            
+            try {
+                const response = await fetch(API_URL, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                const data = await response.json();
+                
+                let formatted = '';
+                formatted += JSON.stringify({
+                    status: data.status,
+                    message: data.message,
+                    theme: data.theme,
+                    puzzles: data.puzzles
+                }, null, 2);
+                content.classList.remove('demo-loading');
+                content.textContent = formatted;
+            } catch (error) {
+                content.classList.remove('demo-loading');
+                content.textContent = 'Connection error: ' + error.message;
+            }
+        }
+
+        document.getElementById('generate-btn').addEventListener('click', async function() {
+            const location = document.getElementById('location-select').value;
+            const theme = document.getElementById('theme-select').value;
+            const btn = this;
+            const teaser = document.getElementById('teaser-box');
+
+            btn.disabled = true;
+            btn.textContent = 'Generating...';
+            teaser.innerHTML = '<div class="teaser-title">Generating AI Escape Room</div><p><em>Puzzle generator is working on your room...</em></p>';
+
+            setTimeout(async () => {
+                try {
+                    const response = await fetch(API_URL, {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' },
+                    });
+                    const data = await response.json();
+                    
+                    teaser.innerHTML = `
+                        <div class="teaser-title">AI Escape Room Generated: <strong>${data.theme}</strong> • Location: <strong>${location}</strong></div>
+                        <p><em>AI-generated room created with ${data.puzzles.length} puzzles. Status: ${data.message}</em></p>
+                        <div style="margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(0, 240, 255, 0.3);">
+                            <strong>Puzzles:</strong><br>
+                            ${data.puzzles.map((p, i) => `<span style="color: var(--accent-cyan)">${i + 1}. ${p}</span>`).join('<br>')}
+                        </div>
+                    `;
+                } catch (error) {
+                    teaser.innerHTML = '<div class="teaser-title">Error</div><p><em>Could not generate room. Try again.</em></p>';
+                }
+                btn.disabled = false;
+                btn.textContent = 'Generate Escape Room';
+            }, 1500);
+        });
+
+        loadDemo();
+        setInterval(loadDemo, 30000);
+    </script>
+</body>
+</html>
