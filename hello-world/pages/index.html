@@ -514,7 +514,7 @@
                     <select id="location-select" class="select-field">
                         <option value="prison">Prison</option>
                         <option value="space-station">Space Station</option>
-                        <option value="ship">Ship</option>
+                        <option value="ship" selected>Ship</option>
                         <option value="haunted-house">Haunted House</option>
                         <option value="cyberpunk">Cyberpunk</option>
                     </select>
@@ -525,21 +525,21 @@
                         🎭 Theme
                     </label>
                     <select id="theme-select" class="select-field">
-                        <option value="spooky">Spooky</option>
+                        <option value="spooky" selected>Spooky</option>
                         <option value="cthulhu">Cthulhu</option>
-                        <option value="cyberpunk" selected>Cyberpunk</option>
+                        <option value="cyberpunk">Cyberpunk</option>
                         <option value="medieval">Medieval</option>
                     </select>
                 </div>
             </div>
 
             <div class="action-container">
-                <button id="generate-btn" class="btn-primary">Generate Escape Room</button>
+                <button id="generate-btn" class="btn-primary">Start Escape Room Demo</button>
             </div>
 
             <div class="teaser-box" id="teaser-box">
-                <div class="teaser-title">Generated Room Status</div>
-                <p><em>"The rogue AI locked the pantry vault. Inspect the refrigerator door for the binary magnetic sequence before the 60-minute countdown expires."</em></p>
+                <div class="teaser-title">Demo mode: always resolves to Ship + Spooky</div>
+                <p><em>Select any location and theme — the demo will always use Ship + Spooky.</em></p>
             </div>
         </div>
     </section>
@@ -644,38 +644,9 @@ Loading live data...
             }
         }
 
-        document.getElementById('generate-btn').addEventListener('click', async function() {
-            const location = document.getElementById('location-select').value;
-            const theme = document.getElementById('theme-select').value;
-            const btn = this;
-            const teaser = document.getElementById('teaser-box');
-
-            btn.disabled = true;
-            btn.textContent = 'Generating...';
-            teaser.innerHTML = '<div class="teaser-title">Generating AI Escape Room</div><p><em>Puzzle generator is working on your room...</em></p>';
-
-            setTimeout(async () => {
-                try {
-                    const response = await fetch(API_URL, {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' },
-                    });
-                    const data = await response.json();
-                    
-                    teaser.innerHTML = `
-                        <div class="teaser-title">AI Escape Room Generated: <strong>${data.theme}</strong> • Location: <strong>${location}</strong></div>
-                        <p><em>AI-generated room created with ${data.puzzles.length} puzzles. Status: ${data.message}</em></p>
-                        <div style="margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px solid rgba(0, 240, 255, 0.3);">
-                            <strong>Puzzles:</strong><br>
-                            ${data.puzzles.map((p, i) => `<span style="color: var(--accent-cyan)">${i + 1}. ${p}</span>`).join('<br>')}
-                        </div>
-                    `;
-                } catch (error) {
-                    teaser.innerHTML = '<div class="teaser-title">Error</div><p><em>Could not generate room. Try again.</em></p>';
-                }
-                btn.disabled = false;
-                btn.textContent = 'Generate Escape Room';
-            }, 1500);
+        document.getElementById('generate-btn').addEventListener('click', function() {
+            // Demo mode: always navigate to lobby with Ship + Spooky
+            window.location.href = 'lobby.html';
         });
 
         loadDemo();
