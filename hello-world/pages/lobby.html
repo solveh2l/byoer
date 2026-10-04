@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="BYOER - Bring Your Own Escape Room">
+    <title>BYOER - Ship of the Damned | Lobby</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #090a0f;
+            --panel-bg: rgba(18, 20, 29, 0.8);
+            --accent-cyan: #00f0ff;
+            --accent-purple: #9d4edd;
+            --accent-red: #ff4444;
+            --text-main: #f0f3f9;
+            --text-muted: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Space Grotesk', sans-serif;
+            overflow-x: hidden;
+            background-image:
+                radial-gradient(circle at 15% 20%, rgba(157, 78, 221, 0.15) 0%, transparent 45%),
+                radial-gradient(circle at 85% 80%, rgba(0, 240, 255, 0.12) 0%, transparent 45%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.2rem 5%;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(9, 10, 15, 0.85);
+        }
+
+        .logo {
+            font-family: 'Cinzel', serif;
+            font-weight: 800;
+            font-size: 1.4rem;
+            letter-spacing: 2px;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .logo span {
+            color: var(--accent-cyan);
+            text-shadow: 0 0 10px var(--accent-cyan);
+        }
+
+        /* Avatars (Google Docs style) */
+        .avatars {
+            display: flex;
+            align-items: center;
+            gap: -8px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--bg-dark);
+            object-fit: cover;
+            transition: transform 0.2s;
+        }
+
+        .avatar:hover {
+            transform: translateY(-2px);
+        }
+
+        .avatar-add {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid var(--accent-cyan);
+            background: rgba(0, 240, 255, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--accent-cyan);
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .avatar-add:hover {
+            transform: scale(1.1);
+        }
+
+        /* Theme Badge */
+        .theme-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(157, 78, 221, 0.15);
+            border: 1px solid var(--accent-purple);
+            color: #fff;
+            padding: 0.35rem 1rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 1.2rem;
+        }
+
+        .theme-badge span {
+            color: var(--accent-cyan);
+        }
+
+        /* Hero Section */
+        .hero {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 3rem 1.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .room-title {
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2rem, 5vw, 3rem);
+            line-height: 1.2;
+            margin-bottom: 1rem;
+            background: linear-gradient(135deg, #ffffff 30%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .room-desc {
+            font-size: 1.05rem;
+            color: var(--text-muted);
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Share Box */
+        .share-box {
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            width: 100%;
+            max-width: 520px;
+            margin-bottom: 2.5rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .share-box h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-cyan);
+            margin-bottom: 0.8rem;
+        }
+
+        .share-input-wrapper {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .share-input {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+        }
+
+        .share-input:focus {
+            border-color: var(--accent-cyan);
+        }
+
+        .btn-copy {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 0.75rem 1.2rem;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+
+        .btn-copy:hover {
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+        }
+
+        .copied-tooltip {
+            color: var(--accent-cyan);
+            font-size: 0.8rem;
+            margin-top: 0.5rem;
+            display: none;
+        }
+
+        /* Start Button */
+        .join-btn {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            padding: 1.2rem 3rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            font-family: inherit;
+            box-shadow: 0 0 25px rgba(0, 240, 255, 0.3);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .join-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 0 35px rgba(157, 78, 221, 0.5);
+        }
+
+        .join-btn:active {
+            transform: translateY(0);
+        }
+
+        .join-subtitle {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-top: 0.8rem;
+        }
+
+        /* Players Count */
+        .players-badge {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--panel-bg);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            border-radius: 50px;
+            padding: 0.6rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            z-index: 50;
+        }
+
+        .player-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--accent-cyan);
+        }
+
+        .players-count {
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="#" class="logo">BYO<span>ER</span></a>
+        <div class="avatars">
+            <img src="https://i.pravatar.cc/40?img=1" alt="Host" class="avatar">
+            <img src="https://i.pravatar.cc/40?img=3" alt="Player" class="avatar">
+            <img src="https://i.pravatar.cc/40?img=5" alt="Player" class="avatar">
+            <div class="avatar-add" title="Invite more players">+</div>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="theme-badge">
+            🚢 Location: <span>Ship</span>  •  🎃 Theme: <span>Spooky</span>
+        </div>
+        <h1 class="room-title">Ship of the Damned</h1>
+        <p class="room-desc">
+            The crew is missing. The ship drifts through the fog. Solve the mysteries,
+            unlock the secrets, and escape before it's too late.
+        </p>
+
+        <div class="share-box">
+            <h3>Invite Your Friends</h3>
+            <div class="share-input-wrapper">
+                <input type="text" class="share-input" value="https://byoer.app/room/ship-of-the-damned" readonly id="share-link">
+                <button class="btn-copy" onclick="copyLink()">Copy Link</button>
+            </div>
+            <div class="copied-tooltip" id="copied-tooltip">Link copied to clipboard!</div>
+        </div>
+
+        <button class="join-btn" onclick="goToVideo()">JOIN THE CREW</button>
+        <p class="join-subtitle">Players can join anytime • No hard limit</p>
+
+        <div class="players-badge">
+            <span class="player-dot"></span>
+            <span class="players-count">5 players</span>
+        </div>
+    </section>
+
+    <script>
+        function copyLink() {
+            const link = document.getElementById('share-link');
+            link.select();
+            link.setSelectionRange(0, 99999);
+            navigator.clipboard.writeText(link.value);
+            
+            const tooltip = document.getElementById('copied-tooltip');
+            tooltip.style.display = 'block';
+            setTimeout(() => {
+                tooltip.style.display = 'none';
+            }, 2000);
+        }
+
+        function goToVideo() {
+            window.location.href = 'video.html';
+        }
+
+        // Simulate incoming players
+        const fakeNames = ['Captain Hook', 'First Mate', 'Navigator', 'Engineer'];
+        const avatarUrls = ['https://i.pravatar.cc/40?img=7', 'https://i.pravatar.cc/40?img=9', 'https://i.pravatar.cc/40?img=11'];
+        const avatarAdd = document.querySelector('.avatar-add');
+        let playerCount = 3;
+
+        // Simulate players joining
+        function simulateJoin() {
+            playerCount += Math.floor(Math.random() * 2) + 1;
+            document.querySelector('.players-count').textContent = playerCount + ' players';
+        }
+
+        setInterval(simulateJoin, 15000);
+
+        // Simulate new avatar joining occasionally
+        function simulateAvatarJoin() {
+            const img = document.createElement('img');
+            img.src = avatarUrls[Math.floor(Math.random() * avatarUrls.length)];
+            img.className = 'avatar';
+            const avatars = document.querySelectorAll('.avatar');
+            avatars[avatars.length - 2].before(img);
+        }
+
+        setTimeout(simulateAvatarJoin, 8000);
+        setTimeout(simulateAvatarJoin, 22000);
+    </script>
+</body>
+</html>
