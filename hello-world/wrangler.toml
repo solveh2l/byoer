@@ -1,0 +1,12 @@
+wrangler-version = "4.4.0"
+
+name = "hello-world-byre"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[vars]
+AI_API_KEY = ""
+ENVIRONMENT = "production"
+
+[env.dev]
+vars = { ENVIRONMENT = "development" }
