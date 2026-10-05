@@ -166,6 +166,34 @@
             transition: width 0.1s linear;
         }
 
+        .mute-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 20;
+            background: rgba(0, 0, 0, 0.55);
+            border: 1px solid rgba(0, 240, 255, 0.4);
+            color: #fff;
+            border-radius: 50px;
+            padding: 0.6rem 1.1rem;
+            font-family: inherit;
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: border-color 0.2s, background 0.2s, transform 0.2s;
+        }
+
+        .mute-btn:hover {
+            border-color: var(--accent-cyan);
+            background: rgba(0, 240, 255, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .mute-btn.hidden {
+            display: none;
+        }
+
         .fade-in {
             animation: fadeIn 1.5s ease-in;
         }
@@ -218,11 +246,28 @@
         <div class="play-icon"></div>
     </div>
 
+    <button class="mute-btn" id="mute-btn">🔇 Tap for sound</button>
+
     <script>
         const video = document.getElementById('background-video');
         const playButton = document.getElementById('play-button');
         const progressBar = document.getElementById('progress-bar');
         const textOverlay = document.getElementById('text-overlay');
+        const muteBtn = document.getElementById('mute-btn');
+
+        // Browsers block autoplay with sound, so we start muted and let the viewer tap to unmute.
+        function enableSound() {
+            video.muted = false;
+            video.currentTime = 0;
+            video.play().catch(() => {});
+            muteBtn.textContent = '🔊 Sound on';
+            muteBtn.classList.add('hidden');
+        }
+
+        muteBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            enableSound();
+        });
 
         // Update progress bar
         function updateProgress() {
